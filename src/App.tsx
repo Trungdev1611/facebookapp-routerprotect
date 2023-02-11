@@ -1,25 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Box } from "@mui/material";
+import Apiclient from "./Api/Apiclient";
+import "./app.scss";
+import SnackbarMUI from "./Components/common/SnackbarMUI";
+import LoginPage from "./Pages/LoginPage";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
+import Register from "./Components/register/Register";
 
+interface childrenProps {
+  children: JSX.Element;
+}
 function App() {
+  function ProtectedRoute({ children }: childrenProps) {
+    const token = localStorage.getItem("tokenJWT");
+    if (!token) {
+      return <Navigate to="/login" />;
+    } else {
+      return children;
+    }
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box className="App">
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <div>App</div>
+            </ProtectedRoute>
+          }
+        ></Route>
+      </Routes>
+
+      <SnackbarMUI />
+    </Box>
   );
 }
 
